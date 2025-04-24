@@ -5,14 +5,18 @@
     ENV PYTHONDONTWRITEBYTECODE=1 \
         PYTHONUNBUFFERED=1
     
-    COPY habit-tracker-backend/requirements.txt .
+    COPY requirements.txt .
     RUN pip install --no-cache-dir -r requirements.txt
     
-    COPY habit-tracker-backend/ .
-    RUN chmod +x entrypoint.sh
+    COPY ./entrypoint.sh /app/entrypoint.sh
+    RUN chmod +x /app/entrypoint.sh
+
+    COPY alembic.ini .
+
+    COPY . .
+
     
     EXPOSE 8000
-    HEALTHCHECK CMD curl --fail http://localhost:8000/health || exit 1
     
-    CMD ["./entrypoint.sh"]
+    CMD ["/app/entrypoint.sh"]
     
