@@ -14,7 +14,7 @@ function LoginForm() {
     e.preventDefault();
     try {
       const res = await loginUser(form);
-      localStorage.setItem("token", res.data.access_token); // FastAPI должен вернуть токен
+      localStorage.setItem("token", res.data.access_token); // FastAPI должен вернуть токен дададада
       navigate("/home");
     } catch (err) {
       alert("Ошибка входа");
