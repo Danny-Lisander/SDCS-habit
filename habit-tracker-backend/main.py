@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Depends, HTTPException, status
 from sqlalchemy.orm import Session
+from fastapi.middleware.cors import CORSMiddleware
 from typing import List
 import models
 import schemas
@@ -16,6 +17,14 @@ from auth import (
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Habit Tracker API")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # или ["*"] для разработки
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Аутентификация
 @app.post("/register/", response_model=schemas.User)

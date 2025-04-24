@@ -8,7 +8,7 @@ const API = axios.create({
 export const loginUser = (data) =>
   API.post('/token/', null, {
     params: {
-      username: data.email,
+      username: data.username,
       password: data.password,
     },
   });
@@ -16,6 +16,6 @@ export const loginUser = (data) =>
 // Регистрация
 export const registerUser = (data) => API.post('/register/', {
   email: data.email,
-  username: data.email.split('@')[0], // временное имя из email
+  username: data.username,
   password: data.password
 });
