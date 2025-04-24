@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # SDCS Habit Tracker - Docker Deployment
 
 This project is a containerized setup for the SDCS Habit Tracker app, featuring:
@@ -93,3 +94,7 @@ Health check endpoint: `/api/health`
 ## 📝 License
 
 This project is provided for educational/demo purposes. MIT or BSD license recommended.
+=======
+# SDCS-habit
+# Daniil its your turn
+>>>>>>> 9f70608780d5bd17b2a225ad795342afdc158593
