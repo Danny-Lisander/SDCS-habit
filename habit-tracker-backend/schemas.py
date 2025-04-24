@@ -26,7 +26,9 @@ class TokenData(BaseModel):
 class HabitBase(BaseModel):
     title: str
     description: Optional[str] = None
-    frequency: str
+    category: Optional[str] = None
+    color: Optional[str] = None
+    completed: Optional[bool] = False
 
 class HabitCreate(HabitBase):
     pass

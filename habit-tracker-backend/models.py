@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime, Text, ForeignKey
+from sqlalchemy import Column, Integer, String, DateTime, Text, ForeignKey, Boolean
 from sqlalchemy.orm import relationship
 from database import Base
 
@@ -18,7 +18,9 @@ class Habit(Base):
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String, index=True)
     description = Column(Text)
-    frequency = Column(String)  # daily, weekly, monthly
+    category = Column(String, nullable=True)
+    color = Column(String, nullable=True)
+    completed = Column(Boolean, default=False)
     created_at = Column(DateTime)
     owner_id = Column(Integer, ForeignKey("users.id"))
     owner = relationship("User", back_populates="habits") 

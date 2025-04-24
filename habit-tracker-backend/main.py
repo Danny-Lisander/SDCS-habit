@@ -74,7 +74,9 @@ def create_habit(
     db_habit = models.Habit(
         title=habit.title,
         description=habit.description,
-        frequency=habit.frequency,
+        category=habit.category,
+        color=habit.color,
+        completed=habit.completed,
         created_at=datetime.utcnow(),
         owner_id=current_user.id
     )
