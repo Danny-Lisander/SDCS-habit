@@ -76,7 +76,6 @@ def create_habit(
         description=habit.description,
         category=habit.category,
         color=habit.color,
-        completed=habit.completed,
         created_at=datetime.utcnow(),
         owner_id=current_user.id
     )

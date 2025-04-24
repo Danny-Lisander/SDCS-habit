@@ -28,7 +28,6 @@ class HabitBase(BaseModel):
     description: Optional[str] = None
     category: Optional[str] = None
     color: Optional[str] = None
-    completed: Optional[bool] = False
 
 class HabitCreate(HabitBase):
     pass

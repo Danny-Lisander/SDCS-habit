@@ -20,7 +20,6 @@ class Habit(Base):
     description = Column(Text)
     category = Column(String, nullable=True)
     color = Column(String, nullable=True)
-    completed = Column(Boolean, default=False)
     created_at = Column(DateTime)
     owner_id = Column(Integer, ForeignKey("users.id"))
     owner = relationship("User", back_populates="habits") 

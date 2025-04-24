@@ -7,7 +7,6 @@ function HabitFormModal({ isOpen, onClose, onSave }) {
     description: "",
     category: "",
     color: "#ffa94d",
-    completed: false,
   });
 
   if (!isOpen) return null;
@@ -26,7 +25,6 @@ function HabitFormModal({ isOpen, onClose, onSave }) {
         description: "",
         category: "",
         color: "#ffa94d",
-        completed: false,
       });
       onClose();
     } catch (error) {
