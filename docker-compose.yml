@@ -1,0 +1,48 @@
+version: "3.9"
+
+networks:
+  habit-net:
+    driver: overlay
+
+services:
+  backend:
+    build: ./habit-tracker-backend
+    image: habit-backend:1.0
+    env_file: .env
+    depends_on:
+      - postgres
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+      placement:
+        max_replicas_per_node: 1
+    networks:
+      - habit-net
+
+  frontend:
+    build: ./habit-tracker-frontend
+    image: habit-frontend:1.0
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    deploy:
+      replicas: 2
+    networks:
+      - habit-net
+
+  postgres:
+    image: postgres:15-alpine
+    env_file: .env
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+    networks:
+      - habit-net
+
+volumes:
+  pg-data:
