@@ -59,7 +59,7 @@ env/
 # Environment variables
 .env
 
-# Database
+# Database connection
 *.db
 *.sqlite3
 
