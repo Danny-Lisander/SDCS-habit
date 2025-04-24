@@ -1,12 +1,12 @@
-import axios from 'axios';
+import axios from "axios";
 
 const API = axios.create({
-  baseURL: 'http://localhost:8000', // поменяй на свой адрес FastAPI, если нужно
+  baseURL: "http://localhost:8000", // поменяй на свой адрес FastAPI, если нужно
 });
 
 // Добавим токен в каждый запрос
 API.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem("token");
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -15,7 +15,7 @@ API.interceptors.request.use((config) => {
 
 // Отправка email+password на логин
 export const loginUser = (data) =>
-  API.post('/token/', null, {
+  API.post("/token/", null, {
     params: {
       username: data.username,
       password: data.password,
@@ -23,27 +23,28 @@ export const loginUser = (data) =>
   });
 
 // Регистрация
-export const registerUser = (data) => API.post('/register/', {
-  email: data.email,
-  username: data.username,
-  password: data.password
-});
+export const registerUser = (data) =>
+  API.post("/register/", {
+    email: data.email,
+    username: data.username,
+    password: data.password,
+  });
 
 // Получение токена
 const getAuthHeader = () => {
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem("token");
   return { Authorization: `Bearer ${token}` };
 };
 
 // Получить все привычки
 export const getHabits = () =>
-  API.get('/habits/', {
+  API.get("/habits/", {
     headers: getAuthHeader(),
   });
 
 // Создать новую привычку
 export const createHabit = (data) =>
-  API.post('/habits/', data, {
+  API.post("/habits/", data, {
     headers: getAuthHeader(),
   });
 
@@ -53,9 +54,12 @@ export const updateHabit = (id, data) =>
     headers: getAuthHeader(),
   });
 
-// Удалить привычку
-export const deleteHabit = (id) =>
-  API.delete(`/habits/${id}`, {
-    headers: getAuthHeader(),
+export const deleteHabit = async (habitId) => {
+  const token = localStorage.getItem("token");
+  const response = await API.delete(`/habits/${habitId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   });
-
+  return response.data;
+};

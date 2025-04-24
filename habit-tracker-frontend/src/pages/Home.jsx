@@ -4,6 +4,7 @@ import HabitCard from "../components/Habits/HabitCard";
 import HabitLogModal from "../components/Habits/HabitLogModal";
 import { useEffect } from "react";
 import { getHabits } from "../services/api";
+import { deleteHabit as deleteHabitFromApi } from "../services/api";
 import "../styles/Auth.css";
 
 function Home() {
@@ -35,8 +36,14 @@ function Home() {
     setHabits([...habits, habit]);
   };
 
-  const deleteHabit = (habitToDelete) => {
-    setHabits(habits.filter((habit) => habit !== habitToDelete));
+  const deleteHabit = async (habitToDelete) => {
+    try {
+      await deleteHabitFromApi(habitToDelete.id); // предполагается, что в объекте habit есть id
+      setHabits(habits.filter((habit) => habit.id !== habitToDelete.id));
+    } catch (error) {
+      console.error("Ошибка при удалении привычки", error);
+      alert("Ошибка при удалении привычки");
+    }
   };
 
   useEffect(() => {
