@@ -2,6 +2,8 @@ import { useState } from "react";
 import HabitFormModal from "../components/Habits/HabitFormModal";
 import HabitCard from "../components/Habits/HabitCard";
 import HabitLogModal from "../components/Habits/HabitLogModal";
+import { useEffect } from "react";
+import { getHabits } from "../services/api";
 import "../styles/Auth.css";
 
 function Home() {
@@ -36,6 +38,20 @@ function Home() {
   const deleteHabit = (habitToDelete) => {
     setHabits(habits.filter((habit) => habit !== habitToDelete));
   };
+
+  useEffect(() => {
+    const fetchHabits = async () => {
+      try {
+        const response = await getHabits();
+        setHabits(response.data);
+      } catch (error) {
+        console.error("Ошибка при загрузке привычек:", error);
+        alert("Не удалось загрузить привычки. Попробуйте снова.");
+      }
+    };
+  
+    fetchHabits();
+  }, []);
 
   return (
     <>
