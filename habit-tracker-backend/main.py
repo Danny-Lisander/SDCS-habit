@@ -148,3 +148,26 @@ def delete_habit(
     db.delete(habit)
     db.commit()
     return {"message": "Habit deleted successfully"} 
+
+@app.post("/habits/log/", response_model=schemas.HabitLog)
+def log_habit(
+    log: schemas.HabitLogCreate,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user)
+):
+    db_log = models.HabitLog(
+        habit_id=log.habit_id,
+        date=log.date,
+        user_id=current_user.id
+    )
+    db.add(db_log)
+    db.commit()
+    db.refresh(db_log)
+    return db_log
+
+@app.get("/habits/logs/", response_model=List[schemas.HabitLog])
+def get_logs(
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user)
+):
+    return db.query(models.HabitLog).filter(models.HabitLog.user_id == current_user.id).all()

@@ -24,3 +24,14 @@ class Habit(Base):
     created_at = Column(DateTime)
     owner_id = Column(Integer, ForeignKey("users.id"))
     owner = relationship("User", back_populates="habits") 
+
+class HabitLog(Base):
+    __tablename__ = "habit_logs"
+
+    id = Column(Integer, primary_key=True, index=True)
+    habit_id = Column(Integer, ForeignKey("habits.id"), nullable=False)
+    date = Column(DateTime, nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+
+    habit = relationship("Habit")
+    user = relationship("User")

@@ -1,10 +1,11 @@
 import axios from "axios";
 
+// Инициализация axios
 const API = axios.create({
-  baseURL: "http://localhost:8000", // поменяй на свой адрес FastAPI, если нужно
+  baseURL: "http://localhost:8000", // Укажи адрес сервера, если другой
 });
 
-// Добавим токен в каждый запрос
+// Автоматическое добавление токена в заголовки
 API.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
   if (token) {
@@ -13,7 +14,10 @@ API.interceptors.request.use((config) => {
   return config;
 });
 
-// Отправка email+password на логин
+//
+// 🔐 Аутентификация
+//
+
 export const loginUser = (data) =>
   API.post("/token/", null, {
     params: {
@@ -22,7 +26,6 @@ export const loginUser = (data) =>
     },
   });
 
-// Регистрация
 export const registerUser = (data) =>
   API.post("/register/", {
     email: data.email,
@@ -30,36 +33,26 @@ export const registerUser = (data) =>
     password: data.password,
   });
 
-// Получение токена
-const getAuthHeader = () => {
-  const token = localStorage.getItem("token");
-  return { Authorization: `Bearer ${token}` };
-};
+//
+// 📦 Привычки (CRUD)
+//
 
-// Получить все привычки
-export const getHabits = () =>
-  API.get("/habits/", {
-    headers: getAuthHeader(),
+export const getHabits = () => API.get("/habits/");
+
+export const createHabit = (data) => API.post("/habits/", data);
+
+export const deleteHabit = (habitId) => API.delete(`/habits/${habitId}`);
+
+//
+// ✅ Отметка выполнения привычек
+//
+
+// Сохранить лог о выполнении привычки
+export const logHabit = (habitId) =>
+  API.post("/habits/log/", {
+    habit_id: habitId,
+    date: new Date().toISOString(),
   });
 
-// Создать новую привычку
-export const createHabit = (data) =>
-  API.post("/habits/", data, {
-    headers: getAuthHeader(),
-  });
-
-// Обновить привычку (например, выполнение)
-export const updateHabit = (id, data) =>
-  API.put(`/habits/${id}`, data, {
-    headers: getAuthHeader(),
-  });
-
-export const deleteHabit = async (habitId) => {
-  const token = localStorage.getItem("token");
-  const response = await API.delete(`/habits/${habitId}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  return response.data;
-};
+// Получить все логи привычек пользователя
+export const getHabitLogs = () => API.get("/habits/logs/");

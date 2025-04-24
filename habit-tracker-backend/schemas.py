@@ -40,3 +40,16 @@ class Habit(HabitBase):
 
     class Config:
         from_attributes = True 
+
+class HabitLogCreate(BaseModel):
+    habit_id: int
+    date: datetime
+
+class HabitLog(BaseModel):
+    id: int
+    habit_id: int
+    date: datetime
+    user_id: int
+
+    class Config:
+        from_attributes = True

@@ -1,34 +1,43 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import HabitFormModal from "../components/Habits/HabitFormModal";
 import HabitCard from "../components/Habits/HabitCard";
 import HabitLogModal from "../components/Habits/HabitLogModal";
-import { useEffect } from "react";
-import { getHabits } from "../services/api";
-import { deleteHabit as deleteHabitFromApi } from "../services/api";
+import {
+  getHabits,
+  deleteHabit as deleteHabitFromApi,
+  getHabitLogs,
+  logHabit,
+} from "../services/api";
 import "../styles/Auth.css";
 
 function Home() {
   const [habits, setHabits] = useState([]);
   const [showModal, setShowModal] = useState(false);
-
   const [selectedHabit, setSelectedHabit] = useState(null);
   const [logModalOpen, setLogModalOpen] = useState(false);
-  const [habitLogs, setHabitLogs] = useState([]); // временно
+  const [habitLogs, setHabitLogs] = useState([]);
 
   const isHabitDoneToday = (habit) => {
-    return habitLogs.some(
-      (log) =>
-        log.habitId === habit.title &&
-        log.date === new Date().toDateString()
-    );
-  };  
+    const today = new Date().toDateString();
+    return habitLogs.some((log) => {
+      return (
+        log.habit_id === habit.id &&
+        new Date(log.date).toDateString() === today
+      );
+    });
+  };
+  
 
-  const handleLog = (habit, done) => {
+  const handleLog = async (habit, done) => {
     if (done) {
-      setHabitLogs([
-        ...habitLogs,
-        { habitId: habit.title, date: new Date().toDateString() },
-      ]);
+      try {
+        await logHabit(habit.id);
+        const today = new Date().toISOString().split("T")[0];
+        setHabitLogs([...habitLogs, { habit_id: habit.id, date: today }]);
+      } catch (error) {
+        console.error("Ошибка при отметке выполнения:", error);
+        alert("Ошибка при отметке выполнения привычки");
+      }
     }
   };
 
@@ -38,7 +47,7 @@ function Home() {
 
   const deleteHabit = async (habitToDelete) => {
     try {
-      await deleteHabitFromApi(habitToDelete.id); // предполагается, что в объекте habit есть id
+      await deleteHabitFromApi(habitToDelete.id);
       setHabits(habits.filter((habit) => habit.id !== habitToDelete.id));
     } catch (error) {
       console.error("Ошибка при удалении привычки", error);
@@ -47,17 +56,21 @@ function Home() {
   };
 
   useEffect(() => {
-    const fetchHabits = async () => {
+    const fetchData = async () => {
       try {
-        const response = await getHabits();
-        setHabits(response.data);
+        const [habitRes, logsRes] = await Promise.all([
+          getHabits(),
+          getHabitLogs(),
+        ]);
+        setHabits(habitRes.data);
+        setHabitLogs(logsRes.data);
       } catch (error) {
-        console.error("Ошибка при загрузке привычек:", error);
-        alert("Не удалось загрузить привычки. Попробуйте снова.");
+        console.error("Ошибка при загрузке данных:", error);
+        alert("Не удалось загрузить данные. Попробуйте снова.");
       }
     };
-  
-    fetchHabits();
+
+    fetchData();
   }, []);
 
   return (
@@ -84,17 +97,17 @@ function Home() {
         <div style={{ marginTop: "30px" }}>
           {habits.length === 0 && <p>Пока нет привычек. Добавьте первую!</p>}
           {habits.map((habit, index) => (
-          <HabitCard
-            key={index}
-            habit={habit}
-            onDelete={deleteHabit}
-            onLogClick={(habit) => {
-              setSelectedHabit(habit);
-              setLogModalOpen(true);
-            }}
-            isDoneToday={isHabitDoneToday(habit)}
-          />
-        ))}
+            <HabitCard
+              key={index}
+              habit={habit}
+              onDelete={deleteHabit}
+              onLogClick={(habit) => {
+                setSelectedHabit(habit);
+                setLogModalOpen(true);
+              }}
+              isDoneToday={isHabitDoneToday(habit)}
+            />
+          ))}
         </div>
       </div>
     </>
