@@ -1,0 +1,6 @@
+rules:
+  - id: insecure-hashlib-md5
+    pattern: hashlib.md5(...)
+    message: MD5 is insecure. Use SHA-256 or stronger.
+    severity: ERROR
+    languages: [python]
